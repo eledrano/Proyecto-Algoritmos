@@ -1,6 +1,5 @@
 /*
   Modulo: Persistencia en archivos de texto (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
   
   Centraliza la carga y guardado de los datos del sistema en archivos de texto
 
