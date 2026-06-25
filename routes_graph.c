@@ -1,6 +1,5 @@
 /*
    Modulo: Grafo de puntos y rutas (RoutePack)
-   Luis Medrano Gonzalez / Tyrone Carranza Hernandez
  */
 
 #include <stdio.h>
@@ -101,7 +100,7 @@ int addRoute(Graph *graph, const char *origin, const char *destination, int weig
     }
     int originIndex = findPointIndex(graph, origin);
     int destinationIndex = findPointIndex(graph, destination);
-    /* Grafo no dirigido: la ruta se registra en ambos sentidos */
+    /*la ruta se registra en ambos sentidos*/
     graph->adjacencyMatrix[originIndex][destinationIndex] = weight;
     graph->adjacencyMatrix[destinationIndex][originIndex] = weight;
     return 1;
@@ -159,7 +158,7 @@ void dijkstraShortestPath(Graph *graph, const char *originName, const char *dest
     }
     distance[originIndex] = 0;
     for (int count = 0; count < n - 1; count++) {
-        /* Buscar el vertice no visitado en la menor distancia */
+        /* Buscar el vertice no visitado en la menor distancia*/
         int minDistance = INT_MAX;
         int currentVertex = -1;
         for (int i = 0; i < n; i++) {
