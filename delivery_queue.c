@@ -1,7 +1,5 @@
 /*
   Modulo: Cola de entregas pendientes (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-  Ver contrato de interfaz documentado en delivery_queue.h
 */
 
 #include <stdio.h>
@@ -11,10 +9,7 @@
 #include "package_list.h"
 #include "io_utils.h"
 
-/* La pila de devoluciones expone esta funcion (declaracion para evitar ciclo de headers) */
 extern int pushReturnedPackage(const char *code);
-
-/* Instancia global unica de la cola */
 static DeliveryQueue deliveryQueue;
 
 /*
@@ -62,11 +57,11 @@ int enqueue(DeliveryQueue *queue, const char *code) {
         queue->rear = node;
     }
     queue->count++;
-    pkg->state = STATE_PENDING;   /* cambia el estado en el repositorio */
+    pkg->state = STATE_PENDING;   /* cambia el estado en el repositorio*/
     return 1;
 }
 
-/* Imprime los datos del paquete asociado a un codigo, consultando el repositorio */
+/* Imprime los datos del paquete asociado a un codig*/
 static void printPackageByCode(const char *code) {
     Package *pkg = findPackageByCode(code);
     if (pkg == NULL) {
@@ -107,7 +102,7 @@ void peekQueue(DeliveryQueue *queue) {
     printPackageByCode(queue->front->code);
 }
 
-/* Desencola el frente y devuelve el codigo en 'codeOut'. 1 si habia algo, 0 si vacia */
+/* Desencola el frente y devuelve el codigo. 1 si habia algo, 0 si vacia*/
 static int dequeue(DeliveryQueue *queue, char *codeOut) {
     if (isQueueEmpty(queue)) {
         return 0;
@@ -127,7 +122,7 @@ static int dequeue(DeliveryQueue *queue, char *codeOut) {
   Entradas: queue
   Salidas: ninguna
   Restricciones: desencola el siguiente paquete y pregunta si la entrega fue
-  exitosa. Si fue exitosa -> Entregado. Si fallo -> Devuelto y se apila.
+  exitosa.
 */
 void processNextDelivery(DeliveryQueue *queue) {
     char code[PKG_CODE_LENGTH];
@@ -149,7 +144,7 @@ void processNextDelivery(DeliveryQueue *queue) {
     }
 }
 
-/* Libera todos los nodos de la cola */
+/* Libera los nodos de la cola */
 void freeQueue(DeliveryQueue *queue) {
     QueueNode *current = queue->front;
     while (current != NULL) {
@@ -162,12 +157,6 @@ void freeQueue(DeliveryQueue *queue) {
     queue->count = 0;
 }
 
-/*
-  PERSISTENCIA
-  Formato:
-  QUEUE <cantidad>
-  <code>   (un codigo por linea, en orden del frente al final)
-*/
 int saveQueueToFile(DeliveryQueue *queue, const char *filename) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -200,8 +189,7 @@ int loadQueueFromFile(DeliveryQueue *queue, const char *filename) {
     char code[PKG_CODE_LENGTH];
     for (int i = 0; i < total; i++) {
         if (fscanf(file, " %[^\n]\n", code) != 1) break;
-        /* Encolado directo respetando el orden, sin re-cambiar el estado */
-        QueueNode *node = (QueueNode *) malloc(sizeof(QueueNode));
+        QueueNode *node = (QueueNode *) malloc(sizeof(QueueNode)); /* Encolado directo respetando el orden*/
         if (node == NULL) break;
         strcpy(node->code, code);
         node->next = NULL;
@@ -218,16 +206,12 @@ int loadQueueFromFile(DeliveryQueue *queue, const char *filename) {
     return 1;
 }
 
-/* Acceso a la instancia global */
 DeliveryQueue *getDeliveryQueue(void) {
     return &deliveryQueue;
 }
-
-/* Contrato con otros modulos */
 int enqueuePackage(const char *code) {
     return enqueue(&deliveryQueue, code);
 }
-
 int getTotalPendingPackages(void) {
     return deliveryQueue.count;
 }
