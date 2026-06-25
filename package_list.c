@@ -1,6 +1,5 @@
 /*
   Modulo: Gestion de paquetes registrados mediante Lista Enlazada (RoutePack)
-
 */
 
 #include <stdio.h>
