@@ -1,9 +1,6 @@
 /*
   Modulo: Reportes del sistema (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-
 Menu de reportes del sistema. Algunos reportes dependen de datos gestionados por otros modulos del equipo (paquetes y clientes).
-
  */
 
 #ifndef REPORTS_H
