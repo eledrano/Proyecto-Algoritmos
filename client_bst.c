@@ -1,7 +1,5 @@
 /*
   Modulo: Gestion de clientes mediante Arbol Binario de Busqueda (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-  Ver contrato de interfaz documentado en client_bst.h
 */
 
 #include <stdio.h>
@@ -10,7 +8,6 @@
 #include "client_bst.h"
 #include "io_utils.h"
 
-/* Instancia global unica del arbol de clientes */
 static ClientBST clientTree;
 
 /*
@@ -51,7 +48,7 @@ static ClientNode *insertClientNode(ClientNode *node, Client client, int *insert
     } else if (cmp > 0) {
         node->right = insertClientNode(node->right, client, inserted);
     } else {
-        /* Llave duplicada: no se inserta */
+        /* Llave duplicada no se inserta */
         *inserted = 0;
     }
     return node;
@@ -97,13 +94,12 @@ int clientExistsInTree(ClientBST *tree, const char *id) {
     return findClient(tree, id) != NULL;
 }
 
-/* Imprime un cliente con todos sus datos */
+/* Imprime un cliente con sus datos */
 static void printClient(const Client *c) {
     printf("  ID: %s | Nombre: %s | Tel: %s | Correo: %s | Zona: %s\n",
            c->id, c->fullName, c->phone, c->email, c->address);
 }
 
-/* Recorridos recursivos */
 static void inorder(ClientNode *node) {
     if (node == NULL) return;
     inorder(node->left);
@@ -149,7 +145,7 @@ void displayClientsPostorder(ClientBST *tree) {
     postorder(tree->root);
 }
 
-/* Liberacion recursiva de la memoria del arbol */
+/* Liberacion de memoria*/
 static void freeNodes(ClientNode *node) {
     if (node == NULL) return;
     freeNodes(node->left);
@@ -164,13 +160,11 @@ void freeClientBST(ClientBST *tree) {
 }
 
 /*
-  PERSISTENCIA
-  Formato del archivo (un cliente por linea, campos separados por '|'):
   CLIENTS <cantidad>
   <id>|<nombre>|<telefono>|<correo>|<direccion>
 */
 
-/* Recorre el arbol guardando cada cliente (inorden) */
+/* Recorre el arbol guardando cada cliente*/
 static void saveNodes(ClientNode *node, FILE *file) {
     if (node == NULL) return;
     saveNodes(node->left, file);
@@ -222,19 +216,16 @@ ClientBST *getClientTree(void) {
     return &clientTree;
 }
 
-/* Contrato con otros modulos: validacion usada por package_list */
 int clientExists(const char *id) {
     return clientExistsInTree(&clientTree, id);
 }
 
-/* Contrato con reports.c */
 void displayClientsInOrder(void) {
     displayClientsInorder(&clientTree);
 }
 
 /*
   MENU INTERACTIVO
-  Entradas/Salidas: por consola
 */
 void displayClientMenu(void) {
     int option;
