@@ -1,7 +1,5 @@
 /*
   Modulo: Pila de paquetes devueltos (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-  Ver contrato de interfaz documentado en returns_stack.h
 */
 
 #include <stdio.h>
@@ -11,10 +9,8 @@
 #include "package_list.h"
 #include "io_utils.h"
 
-/* La cola expone esta funcion (declaracion para evitar ciclo de headers) */
 extern int enqueuePackage(const char *code);
-
-/* Instancia global unica de la pila */
+/* Instancia global de la pila */
 static ReturnsStack returnsStack;
 
 /*
@@ -53,7 +49,7 @@ int pushReturn(ReturnsStack *stack, const char *code) {
     return 1;
 }
 
-/* Imprime los datos del paquete asociado a un codigo, consultando el repositorio */
+/* Imprime los datos de un paquete asociado al codigo*/
 static void printPackageByCode(const char *code) {
     Package *pkg = findPackageByCode(code);
     if (pkg == NULL) {
@@ -94,7 +90,7 @@ void peekStack(ReturnsStack *stack) {
     printPackageByCode(stack->top->code);
 }
 
-/* Desapila el tope y devuelve el codigo en 'codeOut'. 1 si habia algo, 0 si vacia */
+/* Desapila, 1 si habia algo, 0 si vacia */
 static int pop(ReturnsStack *stack, char *codeOut) {
     if (isStackEmpty(stack)) {
         return 0;
@@ -124,13 +120,12 @@ void reprocessTopReturn(ReturnsStack *stack) {
     if (enqueuePackage(code)) {
         printf("Paquete '%s' reencolado y marcado como Pendiente de entrega.\n", code);
     } else {
-        /* Si no se pudo reencolar, se vuelve a apilar para no perderlo */
         pushReturn(stack, code);
         printf("No se pudo reencolar el paquete; se mantiene en la pila.\n");
     }
 }
 
-/* Libera todos los nodos de la pila */
+/* Libera los nodos de pila*/
 void freeStack(ReturnsStack *stack) {
     StackNode *current = stack->top;
     while (current != NULL) {
@@ -142,12 +137,6 @@ void freeStack(ReturnsStack *stack) {
     stack->count = 0;
 }
 
-/*
-  PERSISTENCIA
-  Formato:
-  STACK <cantidad>
-  <code>   (un codigo por linea; se guarda desde el tope hacia abajo)
-*/
 int saveStackToFile(ReturnsStack *stack, const char *filename) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -177,8 +166,6 @@ int loadStackFromFile(ReturnsStack *stack, const char *filename) {
         fclose(file);
         return 0;
     }
-    /* Se leen los codigos en orden de tope-a-fondo y se guardan en un arreglo
-       temporal para reapilarlos en orden inverso y conservar el tope original */
     char codes[1024][PKG_CODE_LENGTH];
     int read = 0;
     for (int i = 0; i < total && read < 1024; i++) {
@@ -192,16 +179,13 @@ int loadStackFromFile(ReturnsStack *stack, const char *filename) {
     return 1;
 }
 
-/* Acceso a la instancia global */
+/* Acceso a la instancia global*/
 ReturnsStack *getReturnsStack(void) {
     return &returnsStack;
 }
-
-/* Contrato con otros modulos */
 int pushReturnedPackage(const char *code) {
     return pushReturn(&returnsStack, code);
 }
-
 int getTotalReturnedPackages(void) {
     return returnsStack.count;
 }
