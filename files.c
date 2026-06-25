@@ -1,7 +1,5 @@
 /*
     Modulo: Persistencia en archivos de texto
-    Luis Medrano Gonzalez / Tyrone Carranza Hernandez
- Ver el contrato de interfaz documentado en files.h para las funciones
  */
 
 #include <stdio.h>
@@ -12,12 +10,6 @@
     Entradas: graph, filename (nombre del archivo de texto donde se guarda)
     Salidas: 1 si se guardo correctamente, 0 si hubo un error al abrir el archivo
     Restricciones: ninguna
-
-Formato del archivo:
-POINTS <cantidad>
-nombre del punto (una linea por punto)
-ROUTES <cantidad>
-<origen>,<destino>,<peso> (una linea por ruta, solo una direccion)
  */
 int saveRoutesToFile(Graph *graph, const char *filename) {
     FILE *file = fopen(filename, "w");
