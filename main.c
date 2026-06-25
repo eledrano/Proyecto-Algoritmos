@@ -1,15 +1,5 @@
 /*
-    Sistema de gestion de entregas urbanas - RoutePack
-    Integrantes:
-    Luis Orlando Medrano Gonzalez
-    Tyrone Carranza Hernandez
-
-Menu principal del sistema. Integra todos los modulos del proyecto: clientes
-(BST), paquetes (lista enlazada), cola de entregas, pila de devoluciones,
-paquetes por codigo (AVL), grafo de rutas y Dijkstra, y reportes del sistema.
-
-La persistencia se maneja con un archivo de texto por estructura. Al iniciar se
-cargan todos los datos y al salir se guardan y se libera la memoria dinamica.
+    Sistema de gestion de entregas urbanas
 */
 
 #include <stdio.h>
@@ -23,7 +13,7 @@ cargan todos los datos y al salir se guardan y se libera la memoria dinamica.
 #include "files.h"
 #include "reports.h"
 
-/* Nombres de los archivos de persistencia */
+/* Nombres de los archivos de persistencia*/
 #define CLIENTS_FILE  "clients_data.txt"
 #define PACKAGES_FILE "packages_data.txt"
 #define QUEUE_FILE    "queue_data.txt"
@@ -31,17 +21,16 @@ cargan todos los datos y al salir se guardan y se libera la memoria dinamica.
 #define AVL_FILE      "avl_data.txt"
 #define ROUTES_FILE   "routes_data.txt"
 
-/* Carga todos los datos del sistema desde sus archivos de texto */
+/*Carga los datos del sistema desde sus archivos de texto*/
 static void loadAllData(Graph *graph) {
-    /* Se inicializa cada estructura antes de cargar, por si el archivo no existe */
+    /* Inicializa cada estructura antes de cargar*/
     initClientBST(getClientTree());
     initPackageList(getPackageList());
     initQueue(getDeliveryQueue());
     initStack(getReturnsStack());
     *getAVLRootRef() = NULL;
     initGraph(graph);
-
-    /* El orden importa: la cola y la pila referencian paquetes del repositorio */
+    /* La cola y pila referencian paquetes del repositorio*/
     loadClientsFromFile(getClientTree(), CLIENTS_FILE);
     loadPackagesFromFile(getPackageList(), PACKAGES_FILE);
     loadQueueFromFile(getDeliveryQueue(), QUEUE_FILE);
@@ -50,7 +39,7 @@ static void loadAllData(Graph *graph) {
     loadRoutesFromFile(graph, ROUTES_FILE);
 }
 
-/* Guarda todos los datos del sistema en sus archivos de texto */
+/* Guarda todos los datos del sistema en archivos de texto*/
 static void saveAllData(Graph *graph) {
     saveClientsToFile(getClientTree(), CLIENTS_FILE);
     savePackagesToFile(getPackageList(), PACKAGES_FILE);
@@ -60,7 +49,7 @@ static void saveAllData(Graph *graph) {
     saveRoutesToFile(graph, ROUTES_FILE);
 }
 
-/* Libera toda la memoria dinamica reservada por el sistema */
+/* Libera memoria dinamica reservada*/
 static void freeAllData(void) {
     freeClientBST(getClientTree());
     freePackageList(getPackageList());
@@ -72,9 +61,7 @@ static void freeAllData(void) {
 int main(void) {
     Graph cityGraph;
     int option;
-
     loadAllData(&cityGraph);
-
     do {
         printf("\n================ ROUTEPACK ================\n");
         printf("1. Gestionar clientes (BST)\n");
@@ -86,7 +73,6 @@ int main(void) {
         printf("7. Reportes del sistema\n");
         printf("8. Salir\n");
         option = readInt("Opcion: ");
-
         switch (option) {
             case 1:
                 displayClientMenu();
