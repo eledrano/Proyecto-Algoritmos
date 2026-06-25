@@ -1,7 +1,5 @@
 /*
   Modulo: Gestion de paquetes por codigo mediante Arbol AVL (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-  Ver contrato de interfaz documentado en package_avl.h
 */
 
 #include <stdio.h>
@@ -11,10 +9,9 @@
 #include "package_list.h"
 #include "io_utils.h"
 
-/* Raiz global unica del AVL */
+/* Raiz global*/
 static AVLNode *avlRoot = NULL;
-
-/* Devuelve el mayor de dos enteros */
+/* Devuelve el mayor*/
 static int maxInt(int a, int b) {
     return (a > b) ? a : b;
 }
@@ -43,7 +40,7 @@ int avlBalanceFactor(AVLNode *node) {
     return avlHeight(node->left) - avlHeight(node->right);
 }
 
-/* Crea un nodo nuevo (hoja, altura 1) con la copia del paquete */
+/* Crea un nodo nuevo*/
 static AVLNode *createAVLNode(Package pkg) {
     AVLNode *node = (AVLNode *) malloc(sizeof(AVLNode));
     if (node == NULL) {
@@ -57,18 +54,13 @@ static AVLNode *createAVLNode(Package pkg) {
     return node;
 }
 
-/* Recalcula la altura de un nodo a partir de la de sus hijos */
+/* Recalcula la altura de un nodo*/
 static void updateHeight(AVLNode *node) {
     node->height = 1 + maxInt(avlHeight(node->left), avlHeight(node->right));
 }
 
 /*
   Rotacion simple a la derecha.
-        y               x
-       / \             / \
-      x   T3   ->     T1  y
-     / \                 / \
-    T1  T2              T2  T3
 */
 AVLNode *rotateRight(AVLNode *y) {
     AVLNode *x = y->left;
@@ -77,16 +69,11 @@ AVLNode *rotateRight(AVLNode *y) {
     y->left = T2;
     updateHeight(y);
     updateHeight(x);
-    return x;   /* nueva raiz del subarbol */
+    return x;
 }
 
 /*
   Rotacion simple a la izquierda.
-      x                   y
-     / \                 / \
-    T1  y       ->      x   T3
-       / \             / \
-      T2  T3          T1  T2
 */
 AVLNode *rotateLeft(AVLNode *x) {
     AVLNode *y = x->right;
@@ -95,32 +82,30 @@ AVLNode *rotateLeft(AVLNode *x) {
     x->right = T2;
     updateHeight(x);
     updateHeight(y);
-    return y;   /* nueva raiz del subarbol */
-}
+    return y;
 
-/* Reequilibra un nodo aplicando la rotacion adecuada segun el factor de balance */
+/* Reequilibra un nodo*/
 static AVLNode *rebalance(AVLNode *node) {
     int balance = avlBalanceFactor(node);
-
-    /* Caso Izquierda-Izquierda: rotacion simple a la derecha */
+    /*rotacion simple a la derecha*/
     if (balance > 1 && avlBalanceFactor(node->left) >= 0) {
         return rotateRight(node);
     }
-    /* Caso Izquierda-Derecha: rotacion doble izq-der */
+    /*rotacion doble izq-der*/
     if (balance > 1 && avlBalanceFactor(node->left) < 0) {
         node->left = rotateLeft(node->left);
         return rotateRight(node);
     }
-    /* Caso Derecha-Derecha: rotacion simple a la izquierda */
+    /*rotacion simple a la izquierda*/
     if (balance < -1 && avlBalanceFactor(node->right) <= 0) {
         return rotateLeft(node);
     }
-    /* Caso Derecha-Izquierda: rotacion doble der-izq */
+    /*rotacion doble der-izq*/
     if (balance < -1 && avlBalanceFactor(node->right) > 0) {
         node->right = rotateRight(node->right);
         return rotateLeft(node);
     }
-    return node;   /* ya esta balanceado */
+    return node;
 }
 
 /*
@@ -138,7 +123,6 @@ AVLNode *insertAVL(AVLNode *root, Package pkg) {
     } else if (cmp > 0) {
         root->right = insertAVL(root->right, pkg);
     } else {
-        /* Codigo duplicado: se actualizan los datos y no se altera la estructura */
         root->data = pkg;
         return root;
     }
@@ -163,8 +147,7 @@ AVLNode *searchAVL(AVLNode *root, const char *code) {
     return NULL;
 }
 
-/* Imprime un paquete del AVL. Si el paquete aun existe en el repositorio
-   principal, se muestra su estado vigente; si no, se usa la copia del AVL. */
+/* Imprime un paquete del AVL*/
 static void printAVLPackage(const Package *p) {
     Package *live = findPackageByCode(p->code);
     const Package *show = (live != NULL) ? live : p;
@@ -173,7 +156,7 @@ static void printAVLPackage(const Package *p) {
            stateToString(show->state));
 }
 
-/* Recorrido inorden (ordenado por codigo) */
+/* Recorrido inorden*/
 static void inorderAVL(AVLNode *node) {
     if (node == NULL) return;
     inorderAVL(node->left);
@@ -193,7 +176,7 @@ void displayAVLInorder(AVLNode *root) {
     inorderAVL(root);
 }
 
-/* Libera recursivamente todos los nodos del AVL */
+/* Libera recursivamente*/
 void freeAVL(AVLNode *root) {
     if (root == NULL) return;
     freeAVL(root->left);
@@ -201,15 +184,6 @@ void freeAVL(AVLNode *root) {
     free(root);
 }
 
-/*
-  PERSISTENCIA
-  Se guarda en inorden (ordenado por codigo). Al recargar, cada paquete se
-  inserta con insertAVL, que reequilibra automaticamente el arbol.
-
-  Formato (igual al de la lista de paquetes):
-  PACKAGES_AVL <cantidad>
-  <code>|<clientId>|<recipient>|<destination>|<weight>|<priority>|<state>
-*/
 static int countAVL(AVLNode *node) {
     if (node == NULL) return 0;
     return 1 + countAVL(node->left) + countAVL(node->right);
@@ -269,17 +243,15 @@ int loadPackagesAVLFromFile(AVLNode **root, const char *filename) {
 AVLNode *getAVLRoot(void) {
     return avlRoot;
 }
-
 AVLNode **getAVLRootRef(void) {
     return &avlRoot;
 }
 
-/* Contrato con reports.c */
 void displayPackagesSortedByCode(void) {
     displayAVLInorder(avlRoot);
 }
 
-/* Inserta en el AVL todos los paquetes que existan en el repositorio principal */
+/* Inserta al AVL los paquetes que existan en el repositorio principal */
 static void indexAllPackages(void) {
     PackageList *list = getPackageList();
     PackageNode *current = list->head;
