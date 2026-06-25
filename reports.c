@@ -1,25 +1,22 @@
 /*
     Modulo: Reportes del sistema
-    Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-    
 ===========================================================
     CONTRATO DE INTERFAZ CON OTROS MODULOS DEL EQUIPO
 ===========================================================
 
-int  getTotalRegisteredPackages(void);   -> package_list.c
-int  getTotalDeliveredPackages(void);    -> package_list.c
-int  getTotalPendingPackages(void);      -> delivery_queue.c
-int  getTotalReturnedPackages(void);     -> returns_stack.c
-void displayClientsInOrder(void);        -> client_bst.c
-void displayPackagesSortedByCode(void);  -> package_avl.c
+int  getTotalRegisteredPackages(void);-> package_list.c
+int  getTotalDeliveredPackages(void);-> package_list.c
+int  getTotalPendingPackages(void);-> delivery_queue.c
+int  getTotalReturnedPackages(void);-> returns_stack.c
+void displayClientsInOrder(void);-> client_bst.c
+void displayPackagesSortedByCode(void);-> package_avl.c
 ===========================================================
  */
-
 #include <stdio.h>
 #include <string.h>
 #include "reports.h"
 
-/* Funciones esperadas de los modulos del equipo*/
+/* Funciones de los modulos*/
 extern int getTotalRegisteredPackages(void);
 extern int getTotalDeliveredPackages(void);
 extern int getTotalPendingPackages(void);
