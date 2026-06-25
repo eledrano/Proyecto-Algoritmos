@@ -1,17 +1,16 @@
 /*
   Modulo: Gestion de paquetes registrados mediante Lista Enlazada (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-  Ver contrato de interfaz documentado en package_list.h
+
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "package_list.h"
-#include "client_bst.h"   /* para validar el cliente asociado (clientExists) */
+#include "client_bst.h"
 #include "io_utils.h"
 
-/* Instancia global unica: repositorio principal de paquetes */
+/* Instancia global*/
 static PackageList masterList;
 
 /*
@@ -60,7 +59,7 @@ int addPackage(PackageList *list, Package pkg) {
         return 0;
     }
     node->data = pkg;
-    node->next = list->head;   /* insercion al inicio */
+    node->next = list->head;
     list->head = node;
     list->count++;
     return 1;
@@ -163,7 +162,7 @@ int countByState(PackageList *list, PackageState state) {
     return total;
 }
 
-/* Libera todos los nodos de la lista */
+/* Libera los nodos de la lista*/
 void freePackageList(PackageList *list) {
     PackageNode *current = list->head;
     while (current != NULL) {
@@ -174,13 +173,6 @@ void freePackageList(PackageList *list) {
     list->head = NULL;
     list->count = 0;
 }
-
-/*
-  PERSISTENCIA
-  Formato (un paquete por linea, campos separados por '|'):
-  PACKAGES <cantidad>
-  <code>|<clientId>|<recipient>|<destination>|<weight>|<priority>|<state>
-*/
 int savePackagesToFile(PackageList *list, const char *filename) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -222,8 +214,7 @@ int loadPackagesFromFile(PackageList *list, const char *filename) {
             break;
         }
         p.state = (PackageState) stateInt;
-        /* Insercion directa: al cargar no revalidamos contra el BST para no
-           perder datos si los archivos se editan manualmente */
+        /* Insercion directa*/
         PackageNode *node = (PackageNode *) malloc(sizeof(PackageNode));
         if (node == NULL) break;
         node->data = p;
@@ -240,20 +231,15 @@ PackageList *getPackageList(void) {
     return &masterList;
 }
 
-/* Contrato con otros modulos (operan sobre el repositorio global) */
 Package *findPackageByCode(const char *code) {
     return findPackageByCodeInList(&masterList, code);
 }
-
 int updatePackageState(const char *code, PackageState state) {
     return updatePackageStateInList(&masterList, code, state);
 }
-
-/* Contrato con reports.c */
 int getTotalRegisteredPackages(void) {
     return masterList.count;
 }
-
 int getTotalDeliveredPackages(void) {
     return countByState(&masterList, STATE_DELIVERED);
 }
