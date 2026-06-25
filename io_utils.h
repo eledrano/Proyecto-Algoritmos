@@ -1,13 +1,5 @@
 /*
   Modulo: Utilidades de entrada/salida por consola (RoutePack)
-  Luis Medrano Gonzalez / Tyrone Carranza Hernandez
-
-  Funciones de lectura robusta desde teclado. Se definen como 'static' en el
-  header para que cada modulo que lo incluya tenga su propia copia interna
-  (sin conflictos de enlazado) y para centralizar la validacion de entradas.
-
-  Cumple el requisito no funcional 3.9: la aplicacion no debe cerrarse de forma
-  inesperada por errores del usuario al digitar datos.
 */
 
 #ifndef IO_UTILS_H
@@ -17,16 +9,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Descarta los caracteres que quedan en el buffer hasta el fin de linea */
+/* Descarta caracteres que quedan en el buffer hasta fin de linea*/
 static void flushInputBuffer(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {
-        /* descartar */
     }
 }
 
 /*
-  Entradas: prompt (texto a mostrar)
+  Entradas: prompt
   Salidas: un entero validado digitado por el usuario
   Restricciones: insiste hasta recibir un entero valido
 */
@@ -36,7 +27,6 @@ static int readInt(const char *prompt) {
         printf("%s", prompt);
         int result = scanf(" %63s", buffer);
         if (result == EOF) {
-            /* Fin de la entrada (por ejemplo Ctrl+D): se cierra ordenadamente */
             printf("\nEntrada finalizada. Saliendo del sistema...\n");
             exit(0);
         }
@@ -52,7 +42,7 @@ static int readInt(const char *prompt) {
 }
 
 /*
-  Entradas: prompt (texto a mostrar)
+  Entradas: prompt
   Salidas: un numero real validado digitado por el usuario
   Restricciones: insiste hasta recibir un numero valido
 */
@@ -62,8 +52,7 @@ static float readFloat(const char *prompt) {
         printf("%s", prompt);
         int result = scanf(" %63s", buffer);
         if (result == EOF) {
-            /* Fin de la entrada (por ejemplo Ctrl+D): se cierra ordenadamente */
-            printf("\nEntrada finalizada. Saliendo del sistema...\n");
+            printf("\nEntrada finalizada. Saliendo del sistema...\n")
             exit(0);
         }
         if (result == 1) {
