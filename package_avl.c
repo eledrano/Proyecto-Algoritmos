@@ -83,6 +83,7 @@ AVLNode *rotateLeft(AVLNode *x) {
     updateHeight(x);
     updateHeight(y);
     return y;
+}
 
 /* Reequilibra un nodo*/
 static AVLNode *rebalance(AVLNode *node) {

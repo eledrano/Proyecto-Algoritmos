@@ -52,7 +52,7 @@ static float readFloat(const char *prompt) {
         printf("%s", prompt);
         int result = scanf(" %63s", buffer);
         if (result == EOF) {
-            printf("\nEntrada finalizada. Saliendo del sistema...\n")
+            printf("\nEntrada finalizada. Saliendo del sistema...\n");
             exit(0);
         }
         if (result == 1) {
